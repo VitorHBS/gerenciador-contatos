@@ -1,7 +1,7 @@
 import express, {urlencoded} from "express";
 import helmet from "helmet";
 import cors from 'cors';
-import { mainRouter } from "./routers/main.js";
+import { mainRouter } from "./routers/userRouts.js";
 
 const server = express();
 
