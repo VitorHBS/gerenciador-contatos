@@ -2,6 +2,7 @@ import express, {urlencoded} from "express";
 import helmet from "helmet";
 import cors from 'cors';
 import { mainRouter } from "./routers/userRouts.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const server = express();
 
@@ -12,6 +13,8 @@ server.disable('x-powered-by');
 server.use(express.json());
 
 server.use(mainRouter)
+
+server.use(errorHandler);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {

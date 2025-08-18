@@ -14,6 +14,10 @@ const updateUserSchema = z.object({
     newEmail: z.email()
 });
 
+const idSchema = z.object({
+    id: z.coerce.number().positive().int()
+})
+
 export async function getAllUser(req:Request, res:Response){
     const user = await userService.getAllUser()
     return res.status(200).json(user)
@@ -39,12 +43,25 @@ export async function updateUser(req: Request, res: Response){
     const parseResult = updateUserSchema.safeParse(req.body);
 
     if(!parseResult.success){
-        res.status(400).json({error: parseResult});
-        return
+        res.status(400).json({error: parseResult.error});
+        return;
     }
 
-    const { newName, newEmail } = parseResult.data
+    const { newName, newEmail } = parseResult.data;
 
-    const updateUser = await userService.updateUser(Number(id), newName, newEmail)
-    return res.status(200).json(updateUser)
+    const updateUser = await userService.updateUser(Number(id), newName, newEmail);
+    return res.status(200).json(updateUser);
+}
+
+export async function deleteUser(req: Request, res: Response){
+    const { id } = req.params;
+
+    const parseResult = idSchema.safeParse(req.params);
+
+    if(!parseResult.success){
+        res.status(400).json({error: parseResult.error});
+    }
+
+    const deleteUser = await userService.deleteUser(Number(id));
+    return res.status(200).json(deleteUser);
 }

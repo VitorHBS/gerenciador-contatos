@@ -34,3 +34,12 @@ export const updateUser = async (userId: number, newName: string, newEmail: stri
     })
     return result
 }
+
+export const deleteUser = async (userId: number) => {
+    const result = await prisma.user.delete({
+        where: {
+            id: userId
+        }
+    })
+    return result
+}
