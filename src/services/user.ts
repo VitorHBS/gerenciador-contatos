@@ -7,7 +7,7 @@ export const createUser = async (data: Prisma.UserCreateInput) => {
         name: data.name,
         email: data.email
     };
-    if(data.phone !== undefined){     //contornando o problema de telefone nulo
+    if (data.phone !== undefined) {     //contornando o problema de telefone nulo
         prismaData.phone = data.phone
     }
 
@@ -42,4 +42,16 @@ export const deleteUser = async (userId: number) => {
         }
     })
     return result
+}
+
+export const createPostForUser = async (userId: number, postData: {title: string, body: string, subtitle?: string}) => {
+    const result = await prisma.posts.create({
+        data: {
+            title: postData.title,
+            body: postData.body,
+            subtitle: postData.subtitle ?? null,
+            author: {connect: {id: userId}}
+        }
+    })
+    return result;
 }
