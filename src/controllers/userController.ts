@@ -26,6 +26,10 @@ const idSchema = z.object({
     id: z.coerce.number().positive().int()
 })
 
+const commentSchema = z.object({
+    body: z.string().min(1)
+})
+
 
 // Controllers
 export async function getAllUser(req: Request, res: Response) {
@@ -78,7 +82,7 @@ export async function deleteUser(req: Request, res: Response) {
 
 export async function createPostForUser(req: Request, res: Response) {
     const userId = Number(req.params.id);
- 
+
     const parseResult = postSchema.safeParse(req.body);
 
     if (!parseResult.success) {
@@ -88,4 +92,18 @@ export async function createPostForUser(req: Request, res: Response) {
     const createPost = await userService.createPostForUser(userId, parseResult.data);
     return res.status(201).json(createPost);
 
+}
+
+
+export async function createCommmentForUser(req: Request, res: Response) {
+    const userId = Number(req.params.userId);
+    const postId = Number(req.params.postId);
+
+    const parseResult = commentSchema.safeParse(req.body);
+
+    if (!parseResult.success) {
+        return res.status(400).json({ error: parseResult.error });
+    }
+
+    const createComment = await userService.createCommmentForUser(userId, postId, parseResult.data.body)
 }

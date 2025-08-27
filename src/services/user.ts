@@ -44,14 +44,24 @@ export const deleteUser = async (userId: number) => {
     return result
 }
 
-export const createPostForUser = async (userId: number, postData: {title: string, body: string, subtitle?: string | null | undefined}) => {
-    const result = await prisma.posts.create({
+export const createPostForUser = async (userId: number, postData: { title: string, body: string, subtitle?: string | null | undefined }) => {
+    const result = await prisma.post.create({
         data: {
             title: postData.title,
             body: postData.body,
             subtitle: postData.subtitle ?? null,
-            author: {connect: {id: userId}}
+            author: { connect: { id: userId } }
         }
     })
     return result;
+}
+
+export const createCommmentForUser = async (userId: number, postId: number, body: string) => {
+    const result = await prisma.comment.create({
+        data: {
+            authorComment: {connect: {id:userId}},
+            authorPost: {connect: {id:postId}},
+            body: body
+        }
+    })
 }
