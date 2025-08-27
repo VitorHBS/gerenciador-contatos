@@ -27,18 +27,29 @@ model User {
   role     Role     @default(USER)
   createAt DateTime @default(now())
   updateAt DateTime @default(now())
-  post     Posts[]
+  post     Post[]
+  comments Comment[]
 
   @@map("users")
 }
 
-model Posts {
+model Post {
   id       Int     @id @default(autoincrement())
   title    String
   subtitle String?
   body     String
   userId   Int
   author   User    @relation(fields: [userId], references: [id])
+  comments Comment[]
 
   @@map("posts")
+}
+
+model Comment {
+  id            Int @id @default(autoincrement())
+  body          String
+  userId        Int 
+  postId        Int
+  authorComment User   @relation(fields: [userId], references: [id])
+  authorPost    Post   @relation(fields: [postId], references: [id])
 }

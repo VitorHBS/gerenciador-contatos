@@ -3,6 +3,8 @@ import * as userService from "../services/user.js";
 import { z } from "zod";
 
 
+
+// Schemas
 const userSchema = z.object({
     name: z.string().min(1),
     email: z.email(),
@@ -14,10 +16,18 @@ const updateUserSchema = z.object({
     newEmail: z.email()
 });
 
+const postSchema = z.object({
+    title: z.string().min(1),
+    body: z.string().min(1),
+    subtitle: z.string().nullable().optional()
+});
+
 const idSchema = z.object({
     id: z.coerce.number().positive().int()
 })
 
+
+// Controllers
 export async function getAllUser(req: Request, res: Response) {
     const user = await userService.getAllUser()
     return res.status(200).json(user)
@@ -68,13 +78,14 @@ export async function deleteUser(req: Request, res: Response) {
 
 export async function createPostForUser(req: Request, res: Response) {
     const userId = Number(req.params.id);
-    const { title, body, subtitle } = req.body;
+ 
+    const parseResult = postSchema.safeParse(req.body);
 
-    if (!title || !body) {
-        return res.status(400).json({ error: "Title and body are required!" })
-    };
+    if (!parseResult.success) {
+        return res.status(400).json({ error: parseResult.error });
+    }
 
-    const post = await userService.createPostForUser(userId, {title, body, subtitle});
-    return res.status(201).json(post);
+    const createPost = await userService.createPostForUser(userId, parseResult.data);
+    return res.status(201).json(createPost);
 
 }

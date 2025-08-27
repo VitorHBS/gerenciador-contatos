@@ -44,7 +44,7 @@ export const deleteUser = async (userId: number) => {
     return result
 }
 
-export const createPostForUser = async (userId: number, postData: {title: string, body: string, subtitle?: string}) => {
+export const createPostForUser = async (userId: number, postData: {title: string, body: string, subtitle?: string | null | undefined}) => {
     const result = await prisma.posts.create({
         data: {
             title: postData.title,
