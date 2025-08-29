@@ -45,6 +45,8 @@ export const deleteUser = async (userId: number) => {
 }
 
 export const createPostForUser = async (userId: number, postData: { title: string, body: string, subtitle?: string | null | undefined }) => {
+
+
     const result = await prisma.post.create({
         data: {
             title: postData.title,
@@ -53,15 +55,41 @@ export const createPostForUser = async (userId: number, postData: { title: strin
             author: { connect: { id: userId } }
         }
     })
+
+    
+    const userExists = await prisma.user.findUnique({ where: { id: userId } });
+    if (!userExists) {
+        throw new Error("Usuário não encontrado");
+    }
+
     return result;
 }
+
+export const getAllPost = async () => {
+    const result = await prisma.post.findMany({
+        include: {
+            comments: {
+                include: {
+                    authorComment: {
+                        select: {
+                            name: true
+                        }
+                    }
+                }
+            }
+        }
+    })
+    return result
+}
+
 
 export const createCommmentForUser = async (userId: number, postId: number, body: string) => {
     const result = await prisma.comment.create({
         data: {
-            authorComment: {connect: {id:userId}},
-            authorPost: {connect: {id:postId}},
+            authorComment: { connect: { id: userId } },
+            authorPost: { connect: { id: postId } },
             body: body
         }
     })
+    return result
 }
