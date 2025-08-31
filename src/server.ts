@@ -14,7 +14,7 @@ server.use(express.json());
 
 server.use(mainRouter)
 
-
+server.use(errorHandler);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {

@@ -18,7 +18,12 @@ export async function getAllPost(req: Request, res: Response) {
     return res.status(200).json(post);
 }
 
+export async function getUserById(req: Request, res: Response) {
+    const userId = Number(req.params.id);
 
+    const user = await userService.getUserById(userId);
+    return res.status(200).json(user);
+}
 
 /*  -------------------------- Criação -------------------------- */
 export async function createUser(req: Request, res: Response) {
@@ -30,7 +35,7 @@ export async function createUser(req: Request, res: Response) {
     }
 
     const user = await userService.createUser(parseResult.data)
-    return res.status(200).json(user);
+    return res.status(201).json(user);
 }
 
 export async function createPostForUser(req: Request, res: Response) {
@@ -41,7 +46,7 @@ export async function createPostForUser(req: Request, res: Response) {
     if (!parseResult.success) {
         return res.status(400).json({ error: parseResult.error });
     }
-    
+
 
     const createPost = await userService.createPostForUser(userId, parseResult.data);
     return res.status(201).json(createPost);
@@ -97,8 +102,20 @@ export async function deleteUser(req: Request, res: Response) {
     }
 
     const deleteUser = await userService.deleteUser(Number(id));
-    return res.status(200).json(deleteUser);
+    return res.status(204).json(deleteUser);
 }
 
+export async function deletePost(req: Request, res: Response) {
+    const { postId } = req.params;
+
+    const parseResult = idSchema.safeParse({ id: postId });
+
+    if (!parseResult.success) {
+        res.status(400).json({ error: parseResult.error });
+    }
+
+    const deleted = await userService.deletePost(Number(postId));
+    return res.status(204).json(deleted);
+}
 
 

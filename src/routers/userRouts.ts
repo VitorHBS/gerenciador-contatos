@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createCommmentForUser, createPostForUser, createUser, deleteUser, getAllPost, getAllUser, updateUser } from "../controllers/userController.js";
+import { createCommmentForUser, createPostForUser, createUser, deletePost, deleteUser, getAllPost, getAllUser, getUserById, updateUser } from "../controllers/userController.js";
 
 export const mainRouter = Router();
 
@@ -13,7 +13,11 @@ mainRouter.get("/users", getAllUser);
 
 mainRouter.get("/posts", getAllPost)
 
+mainRouter.get("/user/:id", getUserById)
+
 mainRouter.put("/user/:id", updateUser);
 
 mainRouter.delete("/user/:id", deleteUser);
+
+mainRouter.delete("/post/:postId", deletePost)
 
